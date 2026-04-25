@@ -29,7 +29,8 @@ target = line_color[0]
 
 diff = img.astype(int) - target
 distance = np.sqrt(np.sum(diff**2, axis=2))
-mask = distance < 30
+threshold = float(input("Enter color sensitivity (try 10-50): "))
+mask = distance < threshold
 
 xs = []
 ys = []
@@ -76,6 +77,7 @@ y_save = []
 
 
 
+
 for i in range(len(xs)):
     pixel_col = xs[i]
     pixel_row = ys[i]
@@ -86,14 +88,15 @@ for i in range(len(xs)):
 
 num_points = int(input("How many points do you want: "))
 
-indices = np.linspace(0, len(x_save)-1, num_points).astype(int)
+x_even = np.linspace(min(x_save), max(x_save), num_points)
+y_even = np.interp(x_even, x_save, y_save)
 
 with open('graph.csv', 'w', newline="") as file:
     try:
         writer = csv.writer(file)
         writer.writerow(["x", "y"])
-        for i in indices:
-            writer.writerow([x_save[i], y_save[i]])
+        for i in range(len(x_even)):
+            writer.writerow([x_even[i], y_even[i]])
     except:
         print("The process failed!")
     print("File created successfully!")
